@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results - Alzheimer's Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-brain"></i>
+            <span>Alzheimer's AI</span>
+        </div>
+        <div class="nav-menu">
+            <a href="/" class="nav-btn">
+                <i class="fas fa-home"></i>
+                Dashboard
+            </a>
+            <a href="/logout" class="nav-logout">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        
+        <!-- Results Header -->
+        <div class="results-header">
+            <div class="glass-card">
+                <div class="header-content">
+                    <div class="status-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h1>Analysis Complete</h1>
+                        <p>AI has processed your MRI scan successfully</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Results -->
+        <div class="results-grid">
+            
+            <!-- Left Column: Diagnosis -->
+            <div class="diagnosis-section">
+                
+                <!-- Primary Diagnosis Card -->
+                <div class="glass-card diagnosis-card">
+                    <h2>Primary Diagnosis</h2>
+                    
+                    {% set is_alzheimers = prediction.lower() == 'alzheimers' %}
+                    
+                    <div class="diagnosis-badge {{ 'alzheimers' if is_alzheimers else 'normal' }}">
+                        <i class="fas fa-{{ 'exclamation-triangle' if is_alzheimers else 'check-circle' }}"></i>
+                        <span>{{ prediction }}</span>
+                    </div>
+
+                    <div class="confidence-display">
+                        <span class="confidence-label">Confidence Level</span>
+                        <span class="confidence-value">{{ results[0].probability }}%</span>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" style="width: {{ results[0].probability }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Probabilities Breakdown -->
+                <div class="glass-card probabilities-card">
+                    <h3>Detailed Probability Analysis</h3>
+                    
+                    <div class="probability-list">
+                        {% for result in results %}
+                        <div class="probability-item">
+                            <div class="prob-header">
+                                <span class="prob-class">{{ result.class }}</span>
+                                <span class="prob-value">{{ result.probability }}%</span>
+                            </div>
+                            <div class="prob-bar-container">
+                                <div class="prob-bar" style="width: {{ result.probability }}%"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="glass-card recommendations-card">
+                    <h3>
+                        <i class="fas fa-lightbulb"></i>
+                        Clinical Recommendations
+                    </h3>
+                    
+                    {% if is_alzheimers %}
+                    <div class="recommendation-content">
+                        <div class="recommendation-item warning">
+                            <i class="fas fa-user-md"></i>
+                            <div>
+                                <h4>Consult a Specialist</h4>
+                                <p>Schedule an appointment with a neurologist for comprehensive evaluation and treatment planning.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="recommendation-item">
+                            <i class="fas fa-notes-medical"></i>
+                            <div>
+                                <h4>Follow-up Testing</h4>
+                                <p>Additional cognitive assessments and blood tests may be recommended to confirm diagnosis.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="recommendation-item">
+                            <i class="fas fa-heart"></i>
+                            <div>
+                                <h4>Lifestyle Management</h4>
+                                <p>Maintain healthy diet, regular exercise, and cognitive activities. Family support is crucial.</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="recommendation-content">
+                        <div class="recommendation-item success">
+                            <i class="fas fa-smile"></i>
+                            <div>
+                                <h4>Healthy Brain Activity</h4>
+                                <p>No signs of cognitive impairment detected. Continue maintaining a healthy lifestyle.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="recommendation-item">
+                            <i class="fas fa-dumbbell"></i>
+                            <div>
+                                <h4>Prevention Tips</h4>
+                                <p>Regular physical exercise, mental stimulation, and social engagement help maintain cognitive health.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="recommendation-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <div>
+                                <h4>Regular Monitoring</h4>
+                                <p>Consider annual cognitive screenings, especially if you have family history of dementia.</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Right Column: MRI & Info -->
+            <div class="info-section">
+                
+                <!-- MRI Scan Preview -->
+                <div class="glass-card mri-card">
+                    <h3>Analyzed MRI Scan</h3>
+                    <div class="mri-preview">
+                        <img src="/{{ image_path }}" alt="MRI Scan">
+                        <div class="mri-overlay">
+                            <i class="fas fa-search-plus"></i>
+                        </div>
+                    </div>
+                    <div class="mri-info">
+                        <div class="info-row">
+                            <i class="fas fa-calendar"></i>
+                            <span>{{ prediction }}</span>
+                        </div>
+                        <div class="info-row">
+                            <i class="fas fa-clock"></i>
+                            <span>Analyzed just now</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Understanding Results -->
+                <div class="glass-card info-card">
+                    <h3>
+                        <i class="fas fa-info-circle"></i>
+                        Understanding Your Results
+                    </h3>
+                    
+                    <div class="info-content">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div>
+                                <h4>AI Analysis</h4>
+                                <p>Our deep learning model analyzes brain structure patterns associated with Alzheimer's disease.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div>
+                                <h4>Confidence Score</h4>
+                                <p>Higher percentages indicate stronger AI confidence in the diagnosis prediction.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div>
+                                <h4>Not a Substitute</h4>
+                                <p>This is a screening tool. Always consult qualified healthcare professionals for final diagnosis.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="/" class="btn btn-primary">
+                        <i class="fas fa-upload"></i>
+                        Analyze Another Scan
+                    </a>
+                    <button onclick="window.print()" class="btn btn-secondary">
+                        <i class="fas fa-download"></i>
+                        Download Report
+                    </button>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="disclaimer">
+                    <i class="fas fa-shield-alt"></i>
+                    <p><strong>Medical Disclaimer:</strong> This AI system is for research and screening purposes only. It does not replace professional medical diagnosis. Always consult with qualified healthcare providers for medical decisions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animate confidence bars
+        document.addEventListener('DOMContentLoaded', () => {
+            const bars = document.querySelectorAll('.prob-bar');
+            bars.forEach((bar, index) => {
+                setTimeout(() => {
+                    bar.style.opacity = '1';
+                    bar.style.transform = 'scaleX(1)';
+                }, index * 100);
+            });
+
+            // Animate confidence fill
+            const fill = document.querySelector('.confidence-fill');
+            setTimeout(() => {
+                fill.style.opacity = '1';
+            }, 300);
+        });
+
+        // Blob animation
+        const blobs = document.querySelectorAll('.blob');
+        blobs.forEach((blob, index) => {
+            const speed = 0.5 + Math.random() * 0.5;
+            let angle = Math.random() * Math.PI * 2;
+            
+            setInterval(() => {
+                angle += 0.01 * speed;
+                const x = Math.cos(angle) * 10;
+                const y = Math.sin(angle) * 10;
+                blob.style.transform = `translate(${x}px, ${y}px)`;
+            }, 50);
+        });
+
+        // MRI zoom on hover
+        const mriPreview = document.querySelector('.mri-preview');
+        mriPreview.addEventListener('mouseenter', function() {
+            this.querySelector('img').style.transform = 'scale(1.05)';
+        });
+        mriPreview.addEventListener('mouseleave', function() {
+            this.querySelector('img').style.transform = 'scale(1)';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Core ML
+torch
+torchvision
+numpy
+pillow
+
+# Flask Web App
+flask
+werkzeug
+
+# Database
+pymongo
+python-dotenv
+
+# Visualization & Metrics (training only)
+scikit-learn
+matplotlib
+seaborn
+
+# Utilities
+tqdm

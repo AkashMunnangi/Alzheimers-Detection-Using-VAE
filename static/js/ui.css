@@ -1,0 +1,98 @@
+/* ========= BASIC RESET ========= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ========= PAGE BACKGROUND ========= */
+body {
+    min-height: 100vh;
+    background: #0f172a;
+    color: #e5e7eb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ========= AUTH LAYOUT ========= */
+.auth-wrapper {
+    width: 380px;
+    position: relative;
+}
+
+.auth-card {
+    background: #020617;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #1e293b;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+}
+
+/* ========= HEADINGS ========= */
+.auth-card h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #00d4ff;
+}
+
+/* ========= INPUTS ========= */
+.auth-card input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: #020617;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #e5e7eb;
+}
+
+/* ========= BUTTON ========= */
+.auth-card button {
+    width: 100%;
+    padding: 10px;
+    background: #00d4ff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #020617;
+}
+
+/* ========= LINKS ========= */
+.auth-card p {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.auth-card a {
+    color: #00d4ff;
+    text-decoration: none;
+}
+
+/* ========= ALERTS ========= */
+.alert {
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.alert.danger {
+    background: rgba(255, 77, 77, 0.15);
+    color: #ff4d4d;
+}
+
+.alert.success {
+    background: rgba(0, 255, 150, 0.15);
+    color: #00ff99;
+}
+.fade-page {
+    animation: fadeIn .6s ease;
+}
+@keyframes fadeIn {
+    from { opacity:0; transform: translateY(15px); }
+    to { opacity:1; transform: translateY(0); }
+}

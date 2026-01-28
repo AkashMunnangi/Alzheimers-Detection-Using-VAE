@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Alzheimer's Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-brain"></i>
+            <span>Alzheimer's AI</span>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-user">
+                <i class="fas fa-user-circle"></i>
+                <span>{{ session.user }}</span>
+            </div>
+            <a href="/logout" class="nav-logout">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div class="glass-card">
+                <div class="card-header">
+                    <h1>Upload MRI Scan</h1>
+                    <p>Upload a brain MRI scan for AI-powered Alzheimer's analysis</p>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Upload Form -->
+                <form id="uploadForm" action="/predict" method="POST" enctype="multipart/form-data">
+                    
+                    <!-- Drag & Drop Zone -->
+                    <div class="drop-zone" id="dropZone">
+                        <input type="file" id="fileInput" name="file" accept="image/*" hidden required>
+                        
+                        <div class="drop-content" id="dropContent">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h3>Drag & Drop MRI Scan</h3>
+                            <p>or click to browse</p>
+                            <span class="file-hint">Supported: JPG, PNG (Max 16MB)</span>
+                        </div>
+
+                        <!-- Preview -->
+                        <div class="preview-container hidden" id="previewContainer">
+                            <img id="preview" src="" alt="Preview">
+                            <div class="preview-overlay">
+                                <button type="button" class="btn-remove" onclick="removeImage()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="file-info" id="fileInfo"></div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                        <span class="btn-text">
+                            <i class="fas fa-brain"></i>
+                            Analyze with AI
+                        </span>
+                        <span class="btn-loader hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Processing...
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Info Cards -->
+                <div class="info-grid">
+                    <div class="info-card">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>High Accuracy</h4>
+                            <p>AI trained on 10K+ scans</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-lock"></i>
+                        <div>
+                            <h4>Secure & Private</h4>
+                            <p>End-to-end encryption</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-bolt"></i>
+                        <div>
+                            <h4>Instant Results</h4>
+                            <p>Analysis in seconds</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Panel -->
+        <div class="side-panel">
+            <div class="glass-card">
+                <h3>How It Works</h3>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Upload MRI</h4>
+                            <p>Select a brain MRI scan image</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>AI Analysis</h4>
+                            <p>Deep learning model processes the scan</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Get Results</h4>
+                            <p>Receive detailed diagnosis report</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card stats-card">
+                <h3>Detection Stats</h3>
+                <div class="stat">
+                    <div class="stat-value">95%</div>
+                    <div class="stat-label">Accuracy Rate</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">10K+</div>
+                    <div class="stat-label">Scans Analyzed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">&lt;5s</div>
+                    <div class="stat-label">Avg Processing Time</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const dropContent = document.getElementById('dropContent');
+        const previewContainer = document.getElementById('previewContainer');
+        const preview = document.getElementById('preview');
+        const fileInfo = document.getElementById('fileInfo');
+        const submitBtn = document.getElementById('submitBtn');
+        const uploadForm = document.getElementById('uploadForm');
+
+        // Click to upload
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Drag & Drop handlers
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFileSelect(files[0]);
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        // Handle file selection
+        function handleFileSelect(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.src = e.target.result;
+                dropContent.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+                
+                const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+                fileInfo.textContent = `${file.name} (${sizeMB} MB)`;
+                
+                submitBtn.disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Remove image
+        function removeImage() {
+            fileInput.value = '';
+            preview.src = '';
+            dropContent.classList.remove('hidden');
+            previewContainer.classList.add('hidden');
+            submitBtn.disabled = true;
+        }
+
+        // Form submission
+        uploadForm.addEventListener('submit', () => {
+            submitBtn.disabled = true;
+            submitBtn.querySelector('.btn-text').classList.add('hidden');
+            submitBtn.querySelector('.btn-loader').classList.remove('hidden');
+        });
+
+        // Animate blobs
+        const blobs = document.querySelectorAll('.blob');
+        blobs.forEach((blob, index) => {
+            const speed = 0.5 + Math.random() * 0.5;
+            let angle = Math.random() * Math.PI * 2;
+            
+            setInterval(() => {
+                angle += 0.01 * speed;
+                const x = Math.cos(angle) * 10;
+                const y = Math.sin(angle) * 10;
+                blob.style.transform = `translate(${x}px, ${y}px)`;
+            }, 50);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alzheimer's Detection - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-auth.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Login Form -->
+        <div class="form-container" id="loginForm">
+            <div class="glass-card">
+                <div class="card-header">
+                    <i class="fas fa-brain"></i>
+                    <h2>Welcome Back</h2>
+                    <p>Login to continue your diagnosis journey</p>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="/login">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="username" placeholder="Username" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <span>Login</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>or</span>
+                </div>
+
+                <button class="btn btn-secondary" onclick="toggleForms()">
+                    <span>Create New Account</span>
+                    <i class="fas fa-user-plus"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div class="form-container hidden" id="registerForm">
+            <div class="glass-card">
+                <div class="card-header">
+                    <i class="fas fa-user-plus"></i>
+                    <h2>Create Account</h2>
+                    <p>Join us in early Alzheimer's detection</p>
+                </div>
+
+                <form method="POST" action="/register">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="username" placeholder="Username" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Email Address" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <span>Sign Up</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>or</span>
+                </div>
+
+                <button class="btn btn-secondary" onclick="toggleForms()">
+                    <span>Back to Login</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel">
+            <div class="info-content">
+                <h1>AI-Powered<br>Alzheimer's<br>Detection</h1>
+                <p>Advanced neural networks analyzing brain MRI scans for early detection of cognitive impairment.</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-brain"></i>
+                        <span>Deep Learning Analysis</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Secure & Private</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-chart-line"></i>
+                        <span>High Accuracy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleForms() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            
+            loginForm.classList.toggle('hidden');
+            registerForm.classList.toggle('hidden');
+        }
+
+        // Particle animation for blobs
+        const blobs = document.querySelectorAll('.blob');
+        blobs.forEach(blob => {
+            const speed = Math.random() * 2 + 1;
+            let x = Math.random() * 100;
+            let y = Math.random() * 100;
+            let dx = (Math.random() - 0.5) * speed;
+            let dy = (Math.random() - 0.5) * speed;
+
+            setInterval(() => {
+                x += dx;
+                y += dy;
+
+                if (x < 0 || x > 100) dx *= -1;
+                if (y < 0 || y > 100) dy *= -1;
+
+                blob.style.left = x + '%';
+                blob.style.top = y + '%';
+            }, 50);
+        });
+    </script>
+</body>
+</html>
