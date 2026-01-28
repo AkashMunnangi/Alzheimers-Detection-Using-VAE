@@ -17,6 +17,10 @@ The trained model is integrated into a **Flask web application**, where users ca
 * Works well for medical image analysis
 
 
+## Project Execution
+
+Youtube Link: https://youtu.be/vZDnyEG-_wM?si=cQ1pUBXvgnnWJjgb
+
 
 ## Tech Stack
 
@@ -125,11 +129,6 @@ http://127.0.0.1:5000
 * Valid MRI images give correct predictions
 * Non-MRI images are rejected before prediction
 
-
-
-## Project Execution
-
-Youtube Link: https://youtu.be/vZDnyEG-_wM?si=cQ1pUBXvgnnWJjgb
 
 
 ## Note
